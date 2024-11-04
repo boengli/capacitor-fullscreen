@@ -4,32 +4,32 @@
     "description": "Launches capacitor app in fullscreen (immersive) mode.",
     "types": "index.d.ts",
     "files": [
-      "android/",
-      "index.js",
-      "index.d.ts",
-      "README.md"
+        "android/",
+        "index.js",
+        "index.d.ts",
+        "README.md"
     ],
     "author": "R. Lutz (https://github.com/boengli)",
     "license": "MIT",
     "devDependencies": {
-      "@capacitor/android": "^5.0.0",
-      "@capacitor/core": "^5.0.0",
-      "typescript": "^4.1.5"
+        "@capacitor/android": "^5.0.0",
+        "@capacitor/core": "^5.0.0",
+        "typescript": "^4.1.5"
     },
     "capacitor": {
-      "android": {
-        "src": "android"
-      }
+        "android": {
+            "src": "android"
+        }
     },
     "scripts": {
-      "build": "echo 'No TypeScript files to build'",
-      "prepublishOnly": "npm run build"
+        "build": "echo 'No TypeScript files to build'",
+        "prepublishOnly": "npm run build"
     },
     "repository": {
-      "type": "git",
-      "url": "https://github.com/boengli/capacitor-fullscreen.git"
+        "type": "git",
+        "url": "git+https://github.com/boengli/capacitor-fullscreen.git"
     },
     "publishConfig": {
-      "registry": "https://npm.pkg.github.com/"
+        "registry": "https://npm.pkg.github.com/"
     }
 }
