@@ -1,6 +1,6 @@
 package com.boengli.plugins.fullscreen
 
-import android.os.Build
+// import android.os.Build
 import android.util.Log
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -13,7 +13,10 @@ import com.getcapacitor.annotation.CapacitorPlugin
 @CapacitorPlugin(name = "Fullscreen")
 class Fullscreen : Plugin() {
 
-  private val TAG = "FullscreenPlugin"
+  companion object {
+    // Declaring TAG as a compile-time constant
+    const val TAG = "FullscreenPlugin"
+  }
 
   @PluginMethod
   fun activateImmersiveMode(call: PluginCall) {
@@ -56,9 +59,14 @@ class Fullscreen : Plugin() {
   }
 
   private fun isImmersiveModeSupported(): Boolean {
-    val supported = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
-    Log.d(TAG, "isImmersiveModeSupported: $supported")
-    return supported
+    // This function now always returns true because the minimum SDK version
+    // for this plugin is set to 28 in build.gradle.
+
+    // val supported = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
+    // return supported
+
+    Log.d(TAG, "isImmersiveModeSupported: true")
+    return true
   }
 
   private fun setImmersiveMode(activity: android.app.Activity) {
