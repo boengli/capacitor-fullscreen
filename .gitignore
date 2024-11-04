@@ -46,3 +46,4 @@ temp/
 # Miscellaneous
 *.bak
 *.tmp
+.npmrc
