@@ -6,14 +6,6 @@ This Capacitor plugin allows you to enable fullscreen mode in your Android appli
 This plugin is currently under development and has not been fully tested yet.
 
 
-## Install
-
-```bash
-npm install @boengli/capacitor-fullscreen
-npx cap sync
-```
-
-
 ## Details
 
 The Fullscreen functionality utilizes the WindowInsetsControllerCompat class to manage immersive mode in Android.
