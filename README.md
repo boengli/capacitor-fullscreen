@@ -45,6 +45,8 @@ You don't need a plugin. Just add this to your `Info.plist`:
 <false/>
 ```
 
+<br><br>
+
 ## Function Descriptions
 
 ### activateImmersiveMode
