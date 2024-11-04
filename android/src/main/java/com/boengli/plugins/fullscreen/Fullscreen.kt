@@ -26,7 +26,7 @@ class Fullscreen : Plugin() {
     if (activity != null && isImmersiveModeSupported()) {
       activity.runOnUiThread {
         try {
-          hideSystemBars(activity)
+          setImmersiveMode(activity)
           setupVisibilityListeners(activity)
           call.resolve()
         } catch (e: Exception) {
@@ -66,37 +66,35 @@ class Fullscreen : Plugin() {
     return supported
   }
 
-  private fun hideSystemBars(activity: android.app.Activity) {
-    Log.d(TAG, "Hiding system bars and extending layout")
-    val window = activity.window
-    val decorView = window.decorView
+  private fun setImmersiveMode(activity: android.app.Activity) {
+    Log.d(TAG, "Setting immersive mode")
+    val decorView = activity.window.decorView
 
-    // Use system UI visibility flags for immersive mode
-    decorView.systemUiVisibility = (
-            View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                    or View.SYSTEM_UI_FLAG_FULLSCREEN
-                    or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-            )
+    // Use system UI visibility flags for immersive mode, similar to the old Cordova approach
+    val uiOptions = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+            or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+            or View.SYSTEM_UI_FLAG_FULLSCREEN
+            or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
+
+    decorView.systemUiVisibility = uiOptions
 
     // Ensure content extends into system bars
-    WindowCompat.setDecorFitsSystemWindows(window, false)
+    WindowCompat.setDecorFitsSystemWindows(activity.window, false)
 
-    Log.d(TAG, "System bars hidden and layout extended")
+    Log.d(TAG, "Immersive mode activated")
   }
 
   private fun showSystemBars(activity: android.app.Activity) {
     Log.d(TAG, "Showing system bars")
-    val window = activity.window
-    val decorView = window.decorView
+    val decorView = activity.window.decorView
 
     // Clear immersive mode flags to show system bars
     decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
 
     // Reset decor fits system windows
-    WindowCompat.setDecorFitsSystemWindows(window, true)
+    WindowCompat.setDecorFitsSystemWindows(activity.window, true)
 
     Log.d(TAG, "System bars shown")
   }
@@ -104,6 +102,12 @@ class Fullscreen : Plugin() {
   private fun setupVisibilityListeners(activity: android.app.Activity) {
     Log.d(TAG, "Setting up visibility listeners")
     val decorView = activity.window.decorView
+    val uiOptions = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+            or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+            or View.SYSTEM_UI_FLAG_FULLSCREEN
+            or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
 
     // Listener to re-hide system bars when they reappear
     ViewCompat.setOnApplyWindowInsetsListener(decorView) { view: View, insets: WindowInsetsCompat ->
@@ -113,7 +117,7 @@ class Fullscreen : Plugin() {
         activity.runOnUiThread {
           if (!isVisibilityBeingSet.get()) {
             isVisibilityBeingSet.set(true)
-            hideSystemBars(activity)
+            decorView.systemUiVisibility = uiOptions
             isVisibilityBeingSet.set(false)
           }
         }
