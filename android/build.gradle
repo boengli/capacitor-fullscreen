@@ -1,0 +1,64 @@
+ext {
+    junitVersion = project.hasProperty('junitVersion') ? project.junitVersion : '4.13.1'
+    androidxAppCompatVersion = project.hasProperty('androidxAppCompatVersion') ? project.androidxAppCompatVersion : '1.6.1'
+    androidxJunitVersion = project.hasProperty('androidxJunitVersion') ? project.androidxJunitVersion : '1.1.2'
+    androidxEspressoCoreVersion = project.hasProperty('androidxEspressoCoreVersion') ? project.androidxEspressoCoreVersion : '3.3.0'
+}
+
+buildscript {
+    ext.kotlin_version = project.hasProperty("kotlin_version") ? rootProject.ext.kotlin_version : '1.8.20'
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.0.0'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+android {
+    namespace "com.boengli.plugins.fullscreen"
+    compileSdkVersion project.hasProperty('compileSdkVersion') ? project.compileSdkVersion : 33
+    defaultConfig {
+        minSdkVersion project.hasProperty('minSdkVersion') ? project.minSdkVersion : 21
+        targetSdkVersion project.hasProperty('targetSdkVersion') ? project.targetSdkVersion : 33
+        versionCode 1
+        versionName "0.0.1"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    lintOptions {
+        abortOnError false
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_17
+    }
+}
+
+repositories {
+    google()
+    mavenCentral()
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation project(':capacitor-android')
+    implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
+    testImplementation "junit:junit:$junitVersion"
+    androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
+}
