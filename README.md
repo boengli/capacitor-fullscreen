@@ -22,7 +22,7 @@ The Fullscreen functionality utilizes the WindowInsetsControllerCompat class to 
 The immersive mode as implemented is best supported on Android 8.0 (API level 26) and above. While the base WindowInsetsControllerCompat can work on devices running Android 5.0 (API level 21), users may not experience the same level of functionality and behavior.
 
 
-## Example Usage 
+## Example Usage
 
 ```
 import { Fullscreen } from '@boengli/capacitor-fullscreen';
