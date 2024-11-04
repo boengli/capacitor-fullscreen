@@ -4,8 +4,7 @@ import android.os.Build
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowInsetsController
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.getcapacitor.Plugin
 import com.getcapacitor.PluginCall
@@ -29,7 +28,13 @@ class Fullscreen : Plugin() {
 
     @PluginMethod
     fun deactivateImmersiveMode(call: PluginCall) {
-        call.resolve()
+        val activity = bridge.activity
+        if (activity != null && isImmersiveModeSupported()) {
+            showSystemBars(activity)
+            call.resolve()
+        } else {
+            call.reject("Cannot deactivate immersive mode.")
+        }
     }
 
     private fun isImmersiveModeSupported(): Boolean {
@@ -37,19 +42,42 @@ class Fullscreen : Plugin() {
     }
 
     private fun hideSystemBars(activity: android.app.Activity) {
+        val window = activity.window
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            // Use the new API for Android 11+
-            activity.window.insetsController?.let {
+            // For Android 11 (API level 30) and above
+            WindowCompat.setDecorFitsSystemWindows(window, false)
+            val controller = window.insetsController
+            controller?.let {
+                it.hide(WindowInsets.Type.statusBars() or WindowInsets.Type.navigationBars())
                 it.systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-                it.hide(WindowInsets.Type.systemBars())
             }
         } else {
-            // Use the old API for below Android 11
-            val windowInsetsController = ViewCompat.getWindowInsetsController(activity.window.decorView)
-            windowInsetsController?.let {
-                it.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-                it.hide(WindowInsetsCompat.Type.systemBars())
-            }
+            // For Android versions below 11
+            @Suppress("DEPRECATION")
+            window.decorView.systemUiVisibility = (
+                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                or View.SYSTEM_UI_FLAG_FULLSCREEN
+                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+            )
+        }
+    }
+
+    private fun showSystemBars(activity: android.app.Activity) {
+        val window = activity.window
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            // For Android 11 (API level 30) and above
+            WindowCompat.setDecorFitsSystemWindows(window, true)
+            val controller = window.insetsController
+            controller?.show(WindowInsets.Type.statusBars() or WindowInsets.Type.navigationBars())
+        } else {
+            // For Android versions below 11
+            @Suppress("DEPRECATION")
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
         }
     }
 
@@ -57,23 +85,21 @@ class Fullscreen : Plugin() {
         val decorView = activity.window.decorView
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            // Newer method not requiring deprecated flags on Android 11+
-            decorView.setOnApplyWindowInsetsListener { view, insets ->
-                if (insets.isVisible(WindowInsets.Type.systemBars())) {
+            // For Android 11 and above
+            decorView.setOnApplyWindowInsetsListener { _, insets ->
+                val isVisible = insets.isVisible(WindowInsets.Type.statusBars() or WindowInsets.Type.navigationBars())
+                if (isVisible) {
                     hideSystemBars(activity)
                 }
                 insets
             }
         } else {
-            // For older Android versions, use the deprecated API
+            // For Android versions below 11
+            @Suppress("DEPRECATION")
             decorView.setOnSystemUiVisibilityChangeListener { visibility ->
                 if ((visibility and View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) {
                     hideSystemBars(activity)
                 }
-            }
-
-            decorView.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-                if (hasFocus) hideSystemBars(activity)
             }
         }
     }
