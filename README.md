@@ -3,7 +3,7 @@
 This Capacitor plugin allows you to enable fullscreen mode in your Android app, hiding the system status and navigation bars for a more immersive experience.
 
 **Important Note:**
-This plugin is in development and has not yet undergone comprehensive testing.
+This plugin is nearly complete, demonstrating 99% stability and successful testing with Capacitor 5, though it has yet to be evaluated with Capacitor 6.
 
 
 ## Details
