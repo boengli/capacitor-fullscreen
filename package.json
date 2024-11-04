@@ -22,10 +22,13 @@
     },
     "scripts": {
       "build": "tsc",
-      "prepublishOnly": "npm install"
+      "prepublishOnly": "npm run build"
     },
     "repository": {
       "type": "git",
       "url": "https://github.com/boengli/capacitor-fullscreen.git"
+    },
+    "publishConfig": {
+      "registry": "https://npm.pkg.github.com/"
     }
   }
