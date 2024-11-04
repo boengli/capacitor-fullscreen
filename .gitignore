@@ -1,3 +1,6 @@
+# Node.js dependencies
+node_modules/
+
 android/.idea/
 android/.gradle/
 android/build/
