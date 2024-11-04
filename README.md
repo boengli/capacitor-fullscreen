@@ -11,6 +11,13 @@ The Fullscreen functionality utilizes `WindowInsetsControllerCompat` to manage i
 The immersive mode as implemented is best supported on Android 8.0 (API 26) and above. 
 
 
+## Installation
+
+1. Install `npm i @boengli/capacitor-fullscreen`
+2. In `/android/variable.gradle` make sure to have at least `androidxCoreVersion` >=  1.9.0
+3. `npx cap sync android`
+
+
 ## Example Usage
 
 ```
@@ -24,13 +31,6 @@ try {
 }
 
 ```
-
-
-## Android
-
-1. Install `npm i @boengli/capacitor-fullscreen`
-2. In `/android/variable.gradle` make sure to have at least `androidxCoreVersion` >=  1.9.0
-3. `npx cap sync android`
 
 
 ## iOS
