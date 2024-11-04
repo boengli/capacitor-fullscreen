@@ -2,9 +2,6 @@
 
 This Capacitor plugin allows you to enable fullscreen mode in your Android app, hiding the system status and navigation bars for a more immersive experience.
 
-**Important Note:**
-This plugin is nearly complete, demonstrating 99% stability and successful testing with Capacitor 5, though it has yet to be evaluated with Capacitor 6.
-
 
 ## Details
 
@@ -12,6 +9,7 @@ The Fullscreen functionality utilizes `WindowInsetsControllerCompat` to manage i
 
 ### Backwards Compatibility
 The immersive mode as implemented is best supported on Android 8.0 (API 26) and above. 
+
 
 ## Example Usage
 
@@ -26,6 +24,7 @@ try {
 }
 
 ```
+
 
 ## Android
 
@@ -46,6 +45,7 @@ You don't need a plugin. Just add this to your `Info.plist`:
 ```
 
 <br><br>
+
 
 ## Function Descriptions
 
