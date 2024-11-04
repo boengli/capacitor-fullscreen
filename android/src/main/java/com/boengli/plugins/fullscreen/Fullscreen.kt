@@ -2,7 +2,6 @@ package com.boengli.plugins.fullscreen
 
 import android.os.Build
 import android.util.Log
-import android.view.WindowManager
 import android.view.View
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
@@ -12,11 +11,13 @@ import com.getcapacitor.Plugin
 import com.getcapacitor.PluginCall
 import com.getcapacitor.PluginMethod
 import com.getcapacitor.annotation.CapacitorPlugin
+import java.util.concurrent.atomic.AtomicBoolean
 
 @CapacitorPlugin(name = "Fullscreen")
 class Fullscreen : Plugin() {
 
   private val TAG = "FullscreenPlugin"
+  private val isVisibilityBeingSet = AtomicBoolean(false)
 
   @PluginMethod
   fun activateImmersiveMode(call: PluginCall) {
@@ -25,7 +26,6 @@ class Fullscreen : Plugin() {
     if (activity != null && isImmersiveModeSupported()) {
       activity.runOnUiThread {
         try {
-          Log.d(TAG, "Activating immersive mode")
           hideSystemBars(activity)
           setupVisibilityListeners(activity)
           call.resolve()
@@ -47,7 +47,6 @@ class Fullscreen : Plugin() {
     if (activity != null && isImmersiveModeSupported()) {
       activity.runOnUiThread {
         try {
-          Log.d(TAG, "Deactivating immersive mode")
           showSystemBars(activity)
           call.resolve()
         } catch (e: Exception) {
@@ -72,20 +71,18 @@ class Fullscreen : Plugin() {
     val window = activity.window
     val decorView = window.decorView
 
-    // Allow layout to extend into all screen areas
-    window.setFlags(
-      WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-      WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
-    )
+    // Use system UI visibility flags for immersive mode
+    decorView.systemUiVisibility = (
+            View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    or View.SYSTEM_UI_FLAG_FULLSCREEN
+                    or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+            )
 
     // Ensure content extends into system bars
     WindowCompat.setDecorFitsSystemWindows(window, false)
-
-    // Use WindowInsetsControllerCompat to hide system bars
-    val controller = WindowInsetsControllerCompat(window, decorView)
-    controller.hide(WindowInsetsCompat.Type.systemBars())
-    controller.systemBarsBehavior =
-      WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 
     Log.d(TAG, "System bars hidden and layout extended")
   }
@@ -95,14 +92,11 @@ class Fullscreen : Plugin() {
     val window = activity.window
     val decorView = window.decorView
 
-    // Remove the FLAG_LAYOUT_NO_LIMITS flag
-    window.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+    // Clear immersive mode flags to show system bars
+    decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
 
     // Reset decor fits system windows
     WindowCompat.setDecorFitsSystemWindows(window, true)
-
-    val controller = WindowInsetsControllerCompat(window, decorView)
-    controller.show(WindowInsetsCompat.Type.systemBars())
 
     Log.d(TAG, "System bars shown")
   }
@@ -117,8 +111,11 @@ class Fullscreen : Plugin() {
       Log.d(TAG, "System bars visibility changed: $isVisible")
       if (isVisible) {
         activity.runOnUiThread {
-          Log.d(TAG, "Re-hiding system bars")
-          hideSystemBars(activity)
+          if (!isVisibilityBeingSet.get()) {
+            isVisibilityBeingSet.set(true)
+            hideSystemBars(activity)
+            isVisibilityBeingSet.set(false)
+          }
         }
       }
       insets
