@@ -1,8 +1,12 @@
+// index.d.ts
 declare module "@boengli/capacitor-fullscreen" {
-    export class Fullscreen {
+  export interface FullscreenPlugin {
       // Method to activate immersive mode
-      static activateImmersiveMode(): Promise<void>;
+      activateImmersiveMode(): Promise<void>;
       // Method to deactivate immersive mode, if needed
-      static deactivateImmersiveMode(): Promise<void>;
-    }
+      deactivateImmersiveMode(): Promise<void>;
   }
+
+  const Fullscreen: FullscreenPlugin;
+  export { Fullscreen };
+}

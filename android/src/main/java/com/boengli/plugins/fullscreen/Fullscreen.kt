@@ -1,3 +1,4 @@
+// Fullscreen.kt
 package com.boengli.plugins.fullscreen
 
 import android.os.Build
