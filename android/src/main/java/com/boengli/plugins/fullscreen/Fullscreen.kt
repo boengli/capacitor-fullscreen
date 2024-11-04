@@ -2,8 +2,6 @@ package com.boengli.plugins.fullscreen
 
 import android.os.Build
 import android.util.Log
-import android.view.View
-import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -37,6 +35,26 @@ class Fullscreen : Plugin() {
     }
   }
 
+  @PluginMethod
+  fun deactivateImmersiveMode(call: PluginCall) {
+    val activity = bridge.activity
+    Log.d(TAG, "deactivateImmersiveMode called")
+    if (activity != null && isImmersiveModeSupported()) {
+      activity.runOnUiThread {
+        try {
+          resetSystemBars(activity)
+          call.resolve()
+        } catch (e: Exception) {
+          Log.e(TAG, "Error deactivating immersive mode: ${e.message}")
+          call.reject("Error deactivating immersive mode", e)
+        }
+      }
+    } else {
+      Log.e(TAG, "Cannot deactivate immersive mode.")
+      call.reject("Cannot deactivate immersive mode.")
+    }
+  }
+
   private fun isImmersiveModeSupported(): Boolean {
     val supported = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
     Log.d(TAG, "isImmersiveModeSupported: $supported")
@@ -48,16 +66,29 @@ class Fullscreen : Plugin() {
     val window = activity.window
     val decorView = window.decorView
 
-    // Ensure the content layout extends into the navigation and status bar area
     WindowCompat.setDecorFitsSystemWindows(window, false)
 
-    // Use WindowInsetsControllerCompat for immersive mode
     val windowInsetsController = WindowCompat.getInsetsController(window, decorView)
-    if (windowInsetsController != null) {
-      windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
-      windowInsetsController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+    windowInsetsController?.let {
+      it.hide(WindowInsetsCompat.Type.systemBars())
+      it.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
     }
 
     Log.d(TAG, "Immersive mode activated")
+  }
+
+  private fun resetSystemBars(activity: android.app.Activity) {
+    Log.d(TAG, "Resetting system bars")
+    val window = activity.window
+    val decorView = window.decorView
+
+    WindowCompat.setDecorFitsSystemWindows(window, true)
+
+    val windowInsetsController = WindowCompat.getInsetsController(window, decorView)
+    windowInsetsController?.let {
+      it.show(WindowInsetsCompat.Type.systemBars())
+    }
+
+    Log.d(TAG, "System bars reset to visible")
   }
 }
