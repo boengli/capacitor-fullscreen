@@ -27,12 +27,12 @@ The immersive mode as implemented is best supported on Android 8.0 (API level 26
 ```
 import { Fullscreen } from '@boengli/capacitor-fullscreen';
 
-  try {
-    await Fullscreen.activateImmersiveMode();
-    console.log('Fullscreen enabled');
-  } catch (error) {
-    console.error('Error enabling fullscreen:', error);
-  }
+try {
+  await Fullscreen.activateImmersiveMode();
+  console.log('Fullscreen enabled');
+} catch (error) {
+  console.error('Error enabling fullscreen:', error);
+}
 ```
 
 ## Android
