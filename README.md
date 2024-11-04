@@ -11,8 +11,7 @@ This plugin is currently under development and has not been fully tested yet.
 The Fullscreen functionality utilizes the WindowInsetsControllerCompat class to manage immersive mode in Android.
 
 ### Backwards Compatibility
-The immersive mode as implemented is best supported on Android 8.0 (API level 26) and above. While the base WindowInsetsControllerCompat can work on devices running Android 5.0 (API level 21), users may not experience the same level of functionality and behavior.
-
+The immersive mode as implemented is best supported on Android 8.0 (API level 26) and above. 
 
 ## Example Usage
 
@@ -25,6 +24,7 @@ try {
 } catch (error) {
   console.error('Error enabling fullscreen:', error);
 }
+
 ```
 
 ## Android
@@ -44,3 +44,35 @@ You don't need a plugin. Just add this to your `Info.plist`:
 <key>UIViewControllerBasedStatusBarAppearance</key>
 <false/>
 ```
+
+## Function Descriptions
+
+### activateImmersiveMode
+
+```typescript
+activateImmersiveMode() => Promise<void>
+```
+
+Activates immersive mode, hiding both the status and navigation bars.
+
+| Param | Type   | Description |
+|-------|--------|-------------|
+| N/A   | N/A    | This function does not take any parameters. |
+
+**Returns**: A Promise that resolves when immersive mode is successfully activated or rejects with an error if it fails.
+
+---
+
+### deactivateImmersiveMode
+
+```typescript
+deactivateImmersiveMode() => Promise<void>
+```
+
+Deactivates immersive mode, restoring visibility to the status and navigation bars.
+
+| Param | Type   | Description |
+|-------|--------|-------------|
+| N/A   | N/A    | This function does not take any parameters. |
+
+**Returns**: A Promise that resolves when immersive mode is successfully deactivated or rejects with an error if it fails.
