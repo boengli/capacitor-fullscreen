@@ -1,17 +1,17 @@
 # @boengli/capacitor-fullscreen
 
-This Capacitor plugin allows you to enable fullscreen mode in your Android application, effectively hiding the system status and navigation bars for an immersive experience.
+This Capacitor plugin allows you to enable fullscreen mode in your Android app, hiding the system status and navigation bars for a more immersive experience.
 
 **Important Note:**
-This plugin is currently under development and has not been fully tested yet.
+This plugin is in development and has not yet undergone comprehensive testing.
 
 
 ## Details
 
-The Fullscreen functionality utilizes the WindowInsetsControllerCompat class to manage immersive mode in Android.
+The Fullscreen functionality utilizes `WindowInsetsControllerCompat` to manage immersive mode on Android.
 
 ### Backwards Compatibility
-The immersive mode as implemented is best supported on Android 8.0 (API level 26) and above. 
+The immersive mode as implemented is best supported on Android 8.0 (API 26) and above. 
 
 ## Example Usage
 
