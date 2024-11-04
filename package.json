@@ -1,6 +1,6 @@
 {
     "name": "@boengli/capacitor-fullscreen",
-    "version": "0.0.4",
+    "version": "0.0.5",
     "description": "Launches capacitor app in fullscreen (immersive) mode.",
     "types": "index.d.ts",
     "files": [
