@@ -28,7 +28,7 @@ try {
 
 ## Android
 
-1. Install the plugin :: `npm i @boengli/capacitor-fullscreen`
+1. Install `npm i @boengli/capacitor-fullscreen`
 2. In `/android/variable.gradle` make sure to have at least `androidxCoreVersion` >=  1.9.0
 3. `npx cap sync android`
 
