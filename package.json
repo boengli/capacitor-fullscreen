@@ -22,7 +22,7 @@
       }
     },
     "scripts": {
-      "build": "tsc --project tsconfig.json",
+      "build": "echo 'No TypeScript files to build'",
       "prepublishOnly": "npm run build"
     },
     "repository": {
