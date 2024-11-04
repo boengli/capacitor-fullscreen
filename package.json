@@ -1,6 +1,6 @@
 {
     "name": "@boengli/capacitor-fullscreen",
-    "version": "0.0.6",
+    "version": "0.0.5",
     "description": "Launches capacitor app in fullscreen (immersive) mode.",
     "types": "index.d.ts",
     "files": [
@@ -13,7 +13,8 @@
     "license": "MIT",
     "devDependencies": {
       "@capacitor/android": "^5.0.0",
-      "@capacitor/core": "^5.0.0"
+      "@capacitor/core": "^5.0.0",
+      "typescript": "^4.1.5"
     },
     "capacitor": {
       "android": {
@@ -21,7 +22,7 @@
       }
     },
     "scripts": {
-      "build": "tsc",
+      "build": "tsc --project tsconfig.json",
       "prepublishOnly": "npm run build"
     },
     "repository": {
@@ -31,4 +32,4 @@
     "publishConfig": {
       "registry": "https://npm.pkg.github.com/"
     }
-  }
+}
