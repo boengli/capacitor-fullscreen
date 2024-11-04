@@ -69,10 +69,8 @@ class Fullscreen : Plugin() {
     WindowCompat.setDecorFitsSystemWindows(window, false)
 
     val windowInsetsController = WindowCompat.getInsetsController(window, decorView)
-    windowInsetsController?.let {
-      it.hide(WindowInsetsCompat.Type.systemBars())
-      it.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-    }
+    windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
+    windowInsetsController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 
     Log.d(TAG, "Immersive mode activated")
   }
@@ -85,9 +83,7 @@ class Fullscreen : Plugin() {
     WindowCompat.setDecorFitsSystemWindows(window, true)
 
     val windowInsetsController = WindowCompat.getInsetsController(window, decorView)
-    windowInsetsController?.let {
-      it.show(WindowInsetsCompat.Type.systemBars())
-    }
+    windowInsetsController.show(WindowInsetsCompat.Type.systemBars())
 
     Log.d(TAG, "System bars reset to visible")
   }
