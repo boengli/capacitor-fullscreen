@@ -30,6 +30,7 @@ coverage/
 Thumbs.db
 ehthumbs.db
 Desktop.ini
+publish-npm.sh
 
 
 # Temporary files
