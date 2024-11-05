@@ -79,3 +79,18 @@ Deactivates immersive mode, restoring visibility to the status and navigation ba
 
 **Returns**: A Promise that resolves when immersive mode is successfully deactivated or rejects with an error if it fails.
 
+---
+
+### setLegacyFallbackEnabled
+
+```typescript
+setLegacyFallbackEnabled(useLegacyFallback: boolean) => Promise<void>
+```
+
+Enables or disables the legacy immersive mode fallback for Android devices running versions lower than Android 11. This allows the plugin to fall back to using `SYSTEM_UI_FLAG_IMMERSIVE_STICKY` for consistent behavior on older devices.
+
+| Param              | Type    | Description                                                                 |
+|--------------------|---------|-----------------------------------------------------------------------------|
+| `useLegacyFallback` | boolean | Set to `true` (default) to enable legacy fallback for older Android versions, or `false` to disable it. |
+
+**Returns**: A Promise that resolves when the fallback setting is applied or rejects with an error if it fails.
