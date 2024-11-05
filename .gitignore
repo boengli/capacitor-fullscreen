@@ -9,6 +9,9 @@ yarn.lock
 android/.idea/
 android/.gradle/
 android/build/
+android/build/tmp/
+android/build/kotlin/
+android/build/outputs/
 android/app/build/
 dist/
 build/
@@ -47,3 +50,17 @@ temp/
 *.bak
 *.tmp
 .npmrc
+
+# NPM/Yarn debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local build configs
+.eslintcache
+capacitor.config.json
+capacitor.config.ts
+
+# Cache directories
+.cache/
+.parcel-cache/

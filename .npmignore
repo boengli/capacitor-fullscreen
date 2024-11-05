@@ -1,6 +1,0 @@
-.gradle/
-android/.gradle/
-android/build/
-android/build/.transforms/
-android/.gradle/**
-android/build/.transforms/**
