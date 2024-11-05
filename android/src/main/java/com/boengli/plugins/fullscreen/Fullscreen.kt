@@ -24,8 +24,6 @@ class Fullscreen : Plugin() {
   override fun load() {
     super.load()
     Log.d(TAG, "Fullscreen plugin loaded")
-
-    // Automatically activate fullscreen when the plugin is loaded
     activateImmersiveModeInternal()
   }
 
@@ -91,10 +89,7 @@ class Fullscreen : Plugin() {
     val window = activity.window
     val decorView = window.decorView
 
-    // Allow content to extend into the system UI areas
     WindowCompat.setDecorFitsSystemWindows(window, false)
-
-    // Set the status bar and navigation bar to transparent
     window.statusBarColor = Color.TRANSPARENT
     window.navigationBarColor = Color.TRANSPARENT
 
@@ -123,7 +118,7 @@ class Fullscreen : Plugin() {
     }
 
     // Reapply immersive mode when the window regains focus
-    decorView.setOnFocusChangeListener { _, hasFocus ->
+    decorView.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
       if (hasFocus && isImmersiveModeActive) {
         Log.d(TAG, "Window gained focus; re-applying immersive mode")
         setImmersiveMode(activity)
@@ -147,8 +142,9 @@ class Fullscreen : Plugin() {
       decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
     }
 
+    // Remove listeners to prevent memory leaks
     decorView.setOnSystemUiVisibilityChangeListener(null)
-    decorView.setOnFocusChangeListener(null)
+    decorView.onFocusChangeListener = null
 
     Log.d(TAG, "System bars reset to visible")
   }
