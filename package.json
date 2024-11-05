@@ -11,6 +11,10 @@
     ],
     "author": "R. Lutz (https://github.com/boengli)",
     "license": "MIT",
+    "peerDependencies": {
+        "@capacitor/core": "^5.0.0",
+        "@capacitor/android": "^5.0.0"
+    },
     "devDependencies": {
         "@capacitor/android": "^5.0.0",
         "@capacitor/core": "^5.0.0",

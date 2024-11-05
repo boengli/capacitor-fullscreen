@@ -1,7 +1,9 @@
 package com.boengli.plugins.fullscreen
 
+import android.os.Build
 import android.util.Log
 import android.view.ViewTreeObserver
+import android.view.WindowInsetsController
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -91,9 +93,17 @@ class Fullscreen : Plugin() {
     // Allow content to extend into the system UI areas
     WindowCompat.setDecorFitsSystemWindows(window, false)
 
-    val controller = WindowCompat.getInsetsController(window, decorView)
-    controller.hide(WindowInsetsCompat.Type.systemBars())
-    controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+      // For API 30 and above, use WindowInsetsController with BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+      val controller = window.insetsController
+      controller?.hide(WindowInsetsCompat.Type.systemBars())
+      controller?.systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+    } else {
+      // For API < 30, use WindowInsetsControllerCompat with BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+      val controller = WindowCompat.getInsetsController(window, decorView)
+      controller.hide(WindowInsetsCompat.Type.systemBars())
+      controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+    }
 
     // Remove any existing listener to prevent multiple listeners being added
     focusChangeListener?.let {
@@ -104,7 +114,12 @@ class Fullscreen : Plugin() {
     focusChangeListener = ViewTreeObserver.OnWindowFocusChangeListener { hasFocus ->
       if (hasFocus && isImmersiveModeActive) {
         activity.runOnUiThread {
-          controller.hide(WindowInsetsCompat.Type.systemBars())
+          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.insetsController?.hide(WindowInsetsCompat.Type.systemBars())
+          } else {
+            WindowCompat.getInsetsController(window, decorView)
+              .hide(WindowInsetsCompat.Type.systemBars())
+          }
         }
       }
     }
@@ -120,8 +135,13 @@ class Fullscreen : Plugin() {
 
     WindowCompat.setDecorFitsSystemWindows(window, true)
 
-    val controller = WindowCompat.getInsetsController(window, decorView)
-    controller.show(WindowInsetsCompat.Type.systemBars())
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+      val controller = window.insetsController
+      controller?.show(WindowInsetsCompat.Type.systemBars())
+    } else {
+      val controller = WindowCompat.getInsetsController(window, decorView)
+      controller.show(WindowInsetsCompat.Type.systemBars())
+    }
 
     // Remove the window focus listener to prevent leaks
     focusChangeListener?.let {
