@@ -1,7 +1,7 @@
 package com.boengli.plugins.fullscreen
 
-// import android.os.Build
 import android.util.Log
+import android.view.ViewTreeObserver
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -14,9 +14,11 @@ import com.getcapacitor.annotation.CapacitorPlugin
 class Fullscreen : Plugin() {
 
   companion object {
-    // Declaring TAG as a compile-time constant
     const val TAG = "FullscreenPlugin"
   }
+
+  private var isImmersiveModeActive: Boolean = false
+  private var focusChangeListener: ViewTreeObserver.OnWindowFocusChangeListener? = null
 
   @PluginMethod
   fun activateImmersiveMode(call: PluginCall) {
@@ -26,6 +28,7 @@ class Fullscreen : Plugin() {
       activity.runOnUiThread {
         try {
           setImmersiveMode(activity)
+          isImmersiveModeActive = true
           call.resolve()
         } catch (e: Exception) {
           Log.e(TAG, "Error activating immersive mode: ${e.message}")
@@ -46,6 +49,7 @@ class Fullscreen : Plugin() {
       activity.runOnUiThread {
         try {
           resetSystemBars(activity)
+          isImmersiveModeActive = false
           call.resolve()
         } catch (e: Exception) {
           Log.e(TAG, "Error deactivating immersive mode: ${e.message}")
@@ -58,13 +62,23 @@ class Fullscreen : Plugin() {
     }
   }
 
+  override fun handleOnResume() {
+    super.handleOnResume()
+    if (isImmersiveModeActive) {
+      val activity = bridge.activity
+      if (activity != null && isImmersiveModeSupported()) {
+        activity.runOnUiThread {
+          try {
+            setImmersiveMode(activity)
+          } catch (e: Exception) {
+            Log.e(TAG, "Error re-activating immersive mode on resume: ${e.message}")
+          }
+        }
+      }
+    }
+  }
+
   private fun isImmersiveModeSupported(): Boolean {
-    // This function now always returns true because the minimum SDK version
-    // for this plugin is set to 28 in build.gradle.
-
-    // val supported = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
-    // return supported
-
     Log.d(TAG, "isImmersiveModeSupported: true")
     return true
   }
@@ -74,11 +88,27 @@ class Fullscreen : Plugin() {
     val window = activity.window
     val decorView = window.decorView
 
+    // Allow content to extend into the system UI areas
     WindowCompat.setDecorFitsSystemWindows(window, false)
 
-    val windowInsetsController = WindowCompat.getInsetsController(window, decorView)
-    windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
-    windowInsetsController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+    val controller = WindowCompat.getInsetsController(window, decorView)
+    controller.hide(WindowInsetsCompat.Type.systemBars())
+    controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+
+    // Remove any existing listener to prevent multiple listeners being added
+    focusChangeListener?.let {
+      decorView.viewTreeObserver.removeOnWindowFocusChangeListener(it)
+    }
+
+    // Listen for window focus changes to re-apply immersive mode
+    focusChangeListener = ViewTreeObserver.OnWindowFocusChangeListener { hasFocus ->
+      if (hasFocus && isImmersiveModeActive) {
+        activity.runOnUiThread {
+          controller.hide(WindowInsetsCompat.Type.systemBars())
+        }
+      }
+    }
+    decorView.viewTreeObserver.addOnWindowFocusChangeListener(focusChangeListener)
 
     Log.d(TAG, "Immersive mode activated")
   }
@@ -90,8 +120,14 @@ class Fullscreen : Plugin() {
 
     WindowCompat.setDecorFitsSystemWindows(window, true)
 
-    val windowInsetsController = WindowCompat.getInsetsController(window, decorView)
-    windowInsetsController.show(WindowInsetsCompat.Type.systemBars())
+    val controller = WindowCompat.getInsetsController(window, decorView)
+    controller.show(WindowInsetsCompat.Type.systemBars())
+
+    // Remove the window focus listener to prevent leaks
+    focusChangeListener?.let {
+      decorView.viewTreeObserver.removeOnWindowFocusChangeListener(it)
+      focusChangeListener = null
+    }
 
     Log.d(TAG, "System bars reset to visible")
   }
