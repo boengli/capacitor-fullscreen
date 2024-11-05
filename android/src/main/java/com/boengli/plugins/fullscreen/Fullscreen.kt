@@ -1,9 +1,9 @@
 package com.boengli.plugins.fullscreen
 
+import android.graphics.Color
 import android.os.Build
 import android.util.Log
-import android.view.ViewTreeObserver
-import android.view.WindowInsetsController
+import android.view.View
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -20,22 +20,27 @@ class Fullscreen : Plugin() {
   }
 
   private var isImmersiveModeActive: Boolean = false
-  private var focusChangeListener: ViewTreeObserver.OnWindowFocusChangeListener? = null
+
+  override fun load() {
+    super.load()
+    Log.d(TAG, "Fullscreen plugin loaded")
+
+    // Automatically activate fullscreen when the plugin is loaded
+    activateImmersiveModeInternal()
+  }
 
   @PluginMethod
   fun activateImmersiveMode(call: PluginCall) {
     val activity = bridge.activity
     Log.d(TAG, "activateImmersiveMode called")
     if (activity != null && isImmersiveModeSupported()) {
-      activity.runOnUiThread {
-        try {
-          setImmersiveMode(activity)
-          isImmersiveModeActive = true
-          call.resolve()
-        } catch (e: Exception) {
-          Log.e(TAG, "Error activating immersive mode: ${e.message}")
-          call.reject("Error activating immersive mode", e)
-        }
+      try {
+        setImmersiveMode(activity)
+        isImmersiveModeActive = true
+        call.resolve()
+      } catch (e: Exception) {
+        Log.e(TAG, "Error activating immersive mode: ${e.message}")
+        call.reject("Error activating immersive mode", e)
       }
     } else {
       Log.e(TAG, "Immersive mode is not supported on this device.")
@@ -48,15 +53,13 @@ class Fullscreen : Plugin() {
     val activity = bridge.activity
     Log.d(TAG, "deactivateImmersiveMode called")
     if (activity != null && isImmersiveModeSupported()) {
-      activity.runOnUiThread {
-        try {
-          resetSystemBars(activity)
-          isImmersiveModeActive = false
-          call.resolve()
-        } catch (e: Exception) {
-          Log.e(TAG, "Error deactivating immersive mode: ${e.message}")
-          call.reject("Error deactivating immersive mode", e)
-        }
+      try {
+        resetSystemBars(activity)
+        isImmersiveModeActive = false
+        call.resolve()
+      } catch (e: Exception) {
+        Log.e(TAG, "Error deactivating immersive mode: ${e.message}")
+        call.reject("Error deactivating immersive mode", e)
       }
     } else {
       Log.e(TAG, "Cannot deactivate immersive mode.")
@@ -69,18 +72,17 @@ class Fullscreen : Plugin() {
     if (isImmersiveModeActive) {
       val activity = bridge.activity
       if (activity != null && isImmersiveModeSupported()) {
-        activity.runOnUiThread {
-          try {
-            setImmersiveMode(activity)
-          } catch (e: Exception) {
-            Log.e(TAG, "Error re-activating immersive mode on resume: ${e.message}")
-          }
+        try {
+          setImmersiveMode(activity)
+        } catch (e: Exception) {
+          Log.e(TAG, "Error re-activating immersive mode on resume: ${e.message}")
         }
       }
     }
   }
 
   private fun isImmersiveModeSupported(): Boolean {
+    // Implement any device-specific checks if necessary
     Log.d(TAG, "isImmersiveModeSupported: true")
     return true
   }
@@ -93,37 +95,22 @@ class Fullscreen : Plugin() {
     // Allow content to extend into the system UI areas
     WindowCompat.setDecorFitsSystemWindows(window, false)
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-      // For API 30 and above, use WindowInsetsController with BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-      val controller = window.insetsController
-      controller?.hide(WindowInsetsCompat.Type.systemBars())
-      controller?.systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-    } else {
-      // For API < 30, use WindowInsetsControllerCompat with BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-      val controller = WindowCompat.getInsetsController(window, decorView)
-      controller.hide(WindowInsetsCompat.Type.systemBars())
-      controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-    }
+    // Set the status bar and navigation bar to transparent
+    window.statusBarColor = Color.TRANSPARENT
+    window.navigationBarColor = Color.TRANSPARENT
 
-    // Remove any existing listener to prevent multiple listeners being added
-    focusChangeListener?.let {
-      decorView.viewTreeObserver.removeOnWindowFocusChangeListener(it)
-    }
+    val controller = WindowCompat.getInsetsController(window, decorView)
+    controller.hide(WindowInsetsCompat.Type.systemBars())
+    controller.systemBarsBehavior =
+      WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 
-    // Listen for window focus changes to re-apply immersive mode
-    focusChangeListener = ViewTreeObserver.OnWindowFocusChangeListener { hasFocus ->
-      if (hasFocus && isImmersiveModeActive) {
-        activity.runOnUiThread {
-          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            window.insetsController?.hide(WindowInsetsCompat.Type.systemBars())
-          } else {
-            WindowCompat.getInsetsController(window, decorView)
-              .hide(WindowInsetsCompat.Type.systemBars())
-          }
-        }
+    // Add a focus change listener to reapply immersive mode when focus is regained
+    decorView.setOnSystemUiVisibilityChangeListener { visibility ->
+      if ((visibility and View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) {
+        // System bars are visible; re-hide them
+        setImmersiveMode(activity)
       }
     }
-    decorView.viewTreeObserver.addOnWindowFocusChangeListener(focusChangeListener)
 
     Log.d(TAG, "Immersive mode activated")
   }
@@ -135,20 +122,21 @@ class Fullscreen : Plugin() {
 
     WindowCompat.setDecorFitsSystemWindows(window, true)
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-      val controller = window.insetsController
-      controller?.show(WindowInsetsCompat.Type.systemBars())
-    } else {
-      val controller = WindowCompat.getInsetsController(window, decorView)
-      controller.show(WindowInsetsCompat.Type.systemBars())
-    }
+    val controller = WindowCompat.getInsetsController(window, decorView)
+    controller.show(WindowInsetsCompat.Type.systemBars())
 
-    // Remove the window focus listener to prevent leaks
-    focusChangeListener?.let {
-      decorView.viewTreeObserver.removeOnWindowFocusChangeListener(it)
-      focusChangeListener = null
-    }
+    // Remove the system UI visibility change listener to prevent memory leaks
+    decorView.setOnSystemUiVisibilityChangeListener(null)
 
     Log.d(TAG, "System bars reset to visible")
+  }
+
+  private fun activateImmersiveModeInternal() {
+    val activity = bridge.activity
+    if (activity != null && isImmersiveModeSupported()) {
+      setImmersiveMode(activity)
+      isImmersiveModeActive = true
+      Log.d(TAG, "Fullscreen mode activated internally")
+    }
   }
 }
