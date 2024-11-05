@@ -82,7 +82,6 @@ class Fullscreen : Plugin() {
   }
 
   private fun isImmersiveModeSupported(): Boolean {
-    // Implement any device-specific checks if necessary
     Log.d(TAG, "isImmersiveModeSupported: true")
     return true
   }
@@ -99,22 +98,32 @@ class Fullscreen : Plugin() {
     window.statusBarColor = Color.TRANSPARENT
     window.navigationBarColor = Color.TRANSPARENT
 
-    val controller = WindowCompat.getInsetsController(window, decorView)
-    controller.hide(WindowInsetsCompat.Type.systemBars())
-    controller.systemBarsBehavior =
-      WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+      val controller = WindowCompat.getInsetsController(window, decorView)
+      controller.hide(WindowInsetsCompat.Type.systemBars())
+      controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+    } else {
+      // Fallback to use SYSTEM_UI_FLAG_IMMERSIVE_STICKY on pre-API 30 devices
+      decorView.systemUiVisibility = (
+              View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                      or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                      or View.SYSTEM_UI_FLAG_FULLSCREEN
+                      or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                      or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                      or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+              )
+    }
 
-    // Add a System UI Visibility Change Listener to re-apply immersive mode when system UI becomes visible
+    // Reapply immersive mode if the system UI becomes visible
     decorView.setOnSystemUiVisibilityChangeListener { visibility ->
       Log.d(TAG, "System UI visibility changed: $visibility")
       if ((visibility and View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) {
-        // System bars are visible; re-hide them immediately
         setImmersiveMode(activity)
       }
     }
 
-    // Add a Focus Change Listener to re-apply immersive mode when the window gains focus
-    decorView.setOnFocusChangeListener { v, hasFocus ->
+    // Reapply immersive mode when the window regains focus
+    decorView.setOnFocusChangeListener { _, hasFocus ->
       if (hasFocus && isImmersiveModeActive) {
         Log.d(TAG, "Window gained focus; re-applying immersive mode")
         setImmersiveMode(activity)
@@ -131,13 +140,14 @@ class Fullscreen : Plugin() {
 
     WindowCompat.setDecorFitsSystemWindows(window, true)
 
-    val controller = WindowCompat.getInsetsController(window, decorView)
-    controller.show(WindowInsetsCompat.Type.systemBars())
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+      val controller = WindowCompat.getInsetsController(window, decorView)
+      controller.show(WindowInsetsCompat.Type.systemBars())
+    } else {
+      decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
+    }
 
-    // Remove the System UI Visibility Change Listener to prevent memory leaks
     decorView.setOnSystemUiVisibilityChangeListener(null)
-
-    // Remove the Focus Change Listener to prevent memory leaks
     decorView.setOnFocusChangeListener(null)
 
     Log.d(TAG, "System bars reset to visible")
