@@ -30,6 +30,6 @@
         "url": "git+https://github.com/boengli/capacitor-fullscreen.git"
     },
     "publishConfig": {
-        "registry": "https://npm.pkg.github.com/"
+        "registry": "https://registry.npmjs.org/"
     }
 }

@@ -78,3 +78,4 @@ Deactivates immersive mode, restoring visibility to the status and navigation ba
 | N/A   | N/A    | This function does not take any parameters. |
 
 **Returns**: A Promise that resolves when immersive mode is successfully deactivated or rejects with an error if it fails.
+
