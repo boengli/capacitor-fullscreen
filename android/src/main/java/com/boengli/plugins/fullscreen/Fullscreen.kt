@@ -104,10 +104,19 @@ class Fullscreen : Plugin() {
     controller.systemBarsBehavior =
       WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 
-    // Add a focus change listener to reapply immersive mode when focus is regained
+    // Add a System UI Visibility Change Listener to re-apply immersive mode when system UI becomes visible
     decorView.setOnSystemUiVisibilityChangeListener { visibility ->
+      Log.d(TAG, "System UI visibility changed: $visibility")
       if ((visibility and View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) {
-        // System bars are visible; re-hide them
+        // System bars are visible; re-hide them immediately
+        setImmersiveMode(activity)
+      }
+    }
+
+    // Add a Focus Change Listener to re-apply immersive mode when the window gains focus
+    decorView.setOnFocusChangeListener { v, hasFocus ->
+      if (hasFocus && isImmersiveModeActive) {
+        Log.d(TAG, "Window gained focus; re-applying immersive mode")
         setImmersiveMode(activity)
       }
     }
@@ -125,8 +134,11 @@ class Fullscreen : Plugin() {
     val controller = WindowCompat.getInsetsController(window, decorView)
     controller.show(WindowInsetsCompat.Type.systemBars())
 
-    // Remove the system UI visibility change listener to prevent memory leaks
+    // Remove the System UI Visibility Change Listener to prevent memory leaks
     decorView.setOnSystemUiVisibilityChangeListener(null)
+
+    // Remove the Focus Change Listener to prevent memory leaks
+    decorView.setOnFocusChangeListener(null)
 
     Log.d(TAG, "System bars reset to visible")
   }
