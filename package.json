@@ -15,8 +15,8 @@
     "author": "R. Lutz (https://github.com/boengli)",
     "license": "MIT",
     "devDependencies": {
-        "@capacitor/android": "^5.0.0",
-        "@capacitor/core": "^5.0.0",
+        "@capacitor/android": ">=5.0.0 <7.0.0",
+        "@capacitor/core": ">=5.0.0 <7.0.0",
         "typescript": "^4.1.5"
     },
     "capacitor": {
