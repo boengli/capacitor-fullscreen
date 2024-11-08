@@ -30,40 +30,44 @@ class Fullscreen : Plugin() {
 
   @PluginMethod
   fun activateImmersiveMode(call: PluginCall) {
-    val activity = bridge.activity
-    Log.d(TAG, "activateImmersiveMode called")
-    if (activity != null && isImmersiveModeSupported()) {
-      try {
-        setImmersiveMode(activity)
-        isImmersiveModeActive = true
-        call.resolve()
-      } catch (e: Exception) {
-        Log.e(TAG, "Error activating immersive mode: ${e.message}")
-        call.reject("Error activating immersive mode", e)
+      val activity = bridge.activity
+      Log.d(TAG, "activateImmersiveMode called")
+      if (activity != null && isImmersiveModeSupported()) {
+          activity.runOnUiThread {
+              try {
+                  setImmersiveMode(activity)
+                  isImmersiveModeActive = true
+                  call.resolve()
+              } catch (e: Exception) {
+                  Log.e(TAG, "Error activating immersive mode: ${e.message}")
+                  call.reject("Error activating immersive mode", e)
+              }
+          }
+      } else {
+          Log.e(TAG, "Immersive mode is not supported on this device.")
+          call.reject("Immersive mode is not supported on this device.")
       }
-    } else {
-      Log.e(TAG, "Immersive mode is not supported on this device.")
-      call.reject("Immersive mode is not supported on this device.")
-    }
   }
 
   @PluginMethod
   fun deactivateImmersiveMode(call: PluginCall) {
-    val activity = bridge.activity
-    Log.d(TAG, "deactivateImmersiveMode called")
-    if (activity != null && isImmersiveModeSupported()) {
-      try {
-        resetSystemBars(activity)
-        isImmersiveModeActive = false
-        call.resolve()
-      } catch (e: Exception) {
-        Log.e(TAG, "Error deactivating immersive mode: ${e.message}")
-        call.reject("Error deactivating immersive mode", e)
+      val activity = bridge.activity
+      Log.d(TAG, "deactivateImmersiveMode called")
+      if (activity != null && isImmersiveModeSupported()) {
+          activity.runOnUiThread {
+              try {
+                  resetSystemBars(activity)
+                  isImmersiveModeActive = false
+                  call.resolve()
+              } catch (e: Exception) {
+                  Log.e(TAG, "Error deactivating immersive mode: ${e.message}")
+                  call.reject("Error deactivating immersive mode", e)
+              }
+          }
+      } else {
+          Log.e(TAG, "Cannot deactivate immersive mode.")
+          call.reject("Cannot deactivate immersive mode.")
       }
-    } else {
-      Log.e(TAG, "Cannot deactivate immersive mode.")
-      call.reject("Cannot deactivate immersive mode.")
-    }
   }
 
   @PluginMethod
@@ -76,14 +80,16 @@ class Fullscreen : Plugin() {
   override fun handleOnResume() {
     super.handleOnResume()
     if (isImmersiveModeActive) {
-      val activity = bridge.activity
-      if (activity != null && isImmersiveModeSupported()) {
-        try {
-          setImmersiveMode(activity)
-        } catch (e: Exception) {
-          Log.e(TAG, "Error re-activating immersive mode on resume: ${e.message}")
+        val activity = bridge.activity
+        if (activity != null && isImmersiveModeSupported()) {
+            activity.runOnUiThread {
+                try {
+                    setImmersiveMode(activity)
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error re-activating immersive mode on resume: ${e.message}")
+                }
+            }
         }
-      }
     }
   }
 
@@ -177,9 +183,11 @@ class Fullscreen : Plugin() {
   private fun activateImmersiveModeInternal() {
     val activity = bridge.activity
     if (activity != null && isImmersiveModeSupported()) {
-      setImmersiveMode(activity)
-      isImmersiveModeActive = true
-      Log.d(TAG, "Fullscreen mode activated internally")
+        activity.runOnUiThread {
+            setImmersiveMode(activity)
+            isImmersiveModeActive = true
+            Log.d(TAG, "Fullscreen mode activated internally")
+        }
     }
   }
 }
