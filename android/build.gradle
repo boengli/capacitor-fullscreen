@@ -7,13 +7,13 @@ ext {
 }
 
 buildscript {
-    ext.kotlin_version = project.hasProperty("kotlin_version") ? rootProject.ext.kotlin_version : '1.8.20'
+    ext.kotlin_version = project.hasProperty("kotlin_version") ? rootProject.ext.kotlin_version : '1.9.10'
     repositories {
         google()
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.0.0'
+        classpath 'com.android.tools.build:gradle:8.2.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -23,12 +23,10 @@ apply plugin: 'kotlin-android'
 
 android {
     namespace "com.boengli.plugins.fullscreen"
-    compileSdkVersion project.hasProperty('compileSdkVersion') ? project.compileSdkVersion : 33
+    compileSdk project.hasProperty('compileSdkVersion') ? rootProject.ext.compileSdkVersion : 34
     defaultConfig {
-        minSdkVersion project.hasProperty('minSdkVersion') ? project.minSdkVersion : 21
-        targetSdkVersion project.hasProperty('targetSdkVersion') ? project.targetSdkVersion : 33
-        versionCode 1
-        versionName "0.0.1"
+        minSdkVersion project.hasProperty('minSdkVersion') ? rootProject.minSdkVersion : 21
+        targetSdkVersion project.hasProperty('targetSdkVersion') ? rootProject.ext.targetSdkVersion : 34
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

@@ -1,6 +1,6 @@
 {
     "name": "@boengli/capacitor-fullscreen",
-    "version": "0.0.16",
+    "version": "0.0.17",
     "description": "Launches capacitor app in fullscreen (immersive) mode.",
     "types": "dist/index.d.ts",
     "main": "dist/index.js",
@@ -15,8 +15,8 @@
     "author": "R. Lutz (https://github.com/boengli)",
     "license": "MIT",
     "devDependencies": {
-        "@capacitor/android": ">=5.0.0 <7.0.0",
-        "@capacitor/core": ">=5.0.0 <7.0.0",
+        "@capacitor/android": "^5.0.0 || ^6.0.0",
+        "@capacitor/core": "^5.0.0 || ^6.0.0",
         "typescript": "^4.1.5"
     },
     "capacitor": {
