@@ -7,8 +7,13 @@ This Capacitor plugin allows you to enable fullscreen mode in your Android app, 
 
 The Fullscreen functionality utilizes `WindowInsetsControllerCompat` to manage immersive mode on Android.
 
-### Backwards Compatibility
-The immersive mode as implemented is best supported on Android 8.0 (API 26) and above. 
+## Backwards Compatibility
+
+- **Plugin version 0.0.18+**  
+  Support is now streamlined for Android 10.0 (API 30) and above. Legacy support for earlier Android versions has been dropped.
+
+- **Plugin version 0.0.17**  
+  The immersive mode implementation supports Android 8.0 (API 26) and above.
 
 
 ## Installation
@@ -79,18 +84,3 @@ Deactivates immersive mode, restoring visibility to the status and navigation ba
 
 **Returns**: A Promise that resolves when immersive mode is successfully deactivated or rejects with an error if it fails.
 
----
-
-### setLegacyFallbackEnabled
-
-```typescript
-setLegacyFallbackEnabled(useLegacyFallback: boolean) => Promise<void>
-```
-
-Enables or disables the legacy immersive mode fallback for Android devices running versions lower than Android 11. This allows the plugin to fall back to using `SYSTEM_UI_FLAG_IMMERSIVE_STICKY` for consistent behavior on older devices.
-
-| Param              | Type    | Description                                                                 |
-|--------------------|---------|-----------------------------------------------------------------------------|
-| `useLegacyFallback` | boolean | Set to `true` (default) to enable legacy fallback for older Android versions, or `false` to disable it. |
-
-**Returns**: A Promise that resolves when the fallback setting is applied or rejects with an error if it fails.

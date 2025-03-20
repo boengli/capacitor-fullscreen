@@ -22,7 +22,6 @@ class Fullscreen : Plugin() {
   }
 
   private var isImmersiveModeActive: Boolean = false
-  private var useLegacyFallback: Boolean = true // Enable or disable fallback for pre-API 30
 
   override fun load() {
     super.load()
@@ -97,13 +96,6 @@ class Fullscreen : Plugin() {
     }
   }
 
-  @PluginMethod
-  fun setLegacyFallbackEnabled(call: PluginCall) {
-    useLegacyFallback = call.getBoolean("useLegacyFallback", true) ?: true
-    Log.d(TAG, "Legacy fallback enabled: $useLegacyFallback")
-    call.resolve()
-  }
-
   override fun handleOnResume() {
     super.handleOnResume()
     if (isImmersiveModeActive) {
@@ -136,52 +128,24 @@ class Fullscreen : Plugin() {
     decorView.onFocusChangeListener = null
     focusChangeListener = null
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-        // Use WindowInsetsController for API 30+
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-        window.statusBarColor = Color.TRANSPARENT
-        window.navigationBarColor = Color.TRANSPARENT
+    // Use WindowInsetsController for API 30+
+    WindowCompat.setDecorFitsSystemWindows(window, false)
+    window.statusBarColor = Color.TRANSPARENT
+    window.navigationBarColor = Color.TRANSPARENT
 
-        val controller = WindowCompat.getInsetsController(window, decorView)
-        controller?.hide(WindowInsetsCompat.Type.systemBars())
-        controller?.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+    val controller = WindowCompat.getInsetsController(window, decorView)
+    controller?.hide(WindowInsetsCompat.Type.systemBars())
+    controller?.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 
-        // Debounce focus change listener to avoid repeated calls
-        focusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-            if (hasFocus && isImmersiveModeActive) {
-                decorView.postDelayed({
-                    controller?.hide(WindowInsetsCompat.Type.systemBars())
-                }, 100) // 100ms debounce
-            }
+    // Debounce focus change listener to avoid repeated calls
+    focusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+        if (hasFocus && isImmersiveModeActive) {
+            decorView.postDelayed({
+                controller?.hide(WindowInsetsCompat.Type.systemBars())
+            }, 100) // 100ms debounce
         }
-        decorView.onFocusChangeListener = focusChangeListener
-    } else if (useLegacyFallback) {
-        // Fallback for pre-API 30
-        decorView.systemUiVisibility = (
-            View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_FULLSCREEN
-                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-        )
-
-        focusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-            if (hasFocus && isImmersiveModeActive) {
-                decorView.post {
-                    decorView.systemUiVisibility = (
-                        View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                            or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            or View.SYSTEM_UI_FLAG_FULLSCREEN
-                            or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    )
-                }
-            }
-        }
-        decorView.onFocusChangeListener = focusChangeListener
     }
+    decorView.onFocusChangeListener = focusChangeListener
 
     Log.d(TAG, "Immersive mode activated")
   }
@@ -195,13 +159,9 @@ class Fullscreen : Plugin() {
       decorView.onFocusChangeListener = null
       focusChangeListener = null
 
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-          WindowCompat.setDecorFitsSystemWindows(window, true)
-          val controller = WindowCompat.getInsetsController(window, decorView)
-          controller?.show(WindowInsetsCompat.Type.systemBars())
-      } else {
-          decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
-      }
+      WindowCompat.setDecorFitsSystemWindows(window, true)
+      val controller = WindowCompat.getInsetsController(window, decorView)
+      controller?.show(WindowInsetsCompat.Type.systemBars())
 
       Log.d(TAG, "System bars reset to visible")
   }
