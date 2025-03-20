@@ -1,38 +1,42 @@
 {
     "name": "@boengli/capacitor-fullscreen",
-    "version": "0.0.18",
+    "version": "0.0.19",
     "description": "Launches capacitor app in fullscreen (immersive) mode.",
     "types": "dist/index.d.ts",
     "main": "dist/index.js",
     "files": [
-        "dist/",
-        "android/build.gradle",
-        "android/src/main/AndroidManifest.xml",
-        "android/src/main/java/com/boengli/plugins/fullscreen/Fullscreen.kt",
-        "README.md",
-        "package.json"
+      "dist/",
+      "android/build.gradle",
+      "android/src/main/AndroidManifest.xml",
+      "android/src/main/java/com/boengli/plugins/fullscreen/Fullscreen.kt",
+      "README.md",
+      "package.json"
     ],
     "author": "R. Lutz (https://github.com/boengli)",
     "license": "MIT",
+    "peerDependencies": {
+      "@capacitor/core": ">=7.0.0"
+    },
     "devDependencies": {
-        "@capacitor/android": "^5.0.0 || ^6.0.0",
-        "@capacitor/core": "^5.0.0 || ^6.0.0",
-        "typescript": "^4.1.5"
+      "@capacitor/android": "^7.0.0",
+      "@capacitor/core": "^7.0.0",
+      "@capacitor/cli": "^7.0.0",
+      "typescript": "^4.1.5"
     },
     "capacitor": {
-        "android": {
-            "src": "android"
-        }
+      "android": {
+        "src": "android"
+      }
     },
     "scripts": {
-        "build": "echo 'No TypeScript files to build'",
-        "prepublishOnly": "npm run build"
+      "build": "echo 'No TypeScript files to build'",
+      "prepublishOnly": "npm run build"
     },
     "repository": {
-        "type": "git",
-        "url": "git+https://github.com/boengli/capacitor-fullscreen.git"
+      "type": "git",
+      "url": "git+https://github.com/boengli/capacitor-fullscreen.git"
     },
     "publishConfig": {
-        "registry": "https://registry.npmjs.org/"
+      "registry": "https://registry.npmjs.org/"
     }
-}
+  }
