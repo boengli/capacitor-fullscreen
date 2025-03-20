@@ -7,13 +7,17 @@ This Capacitor plugin allows you to enable fullscreen mode in your Android app, 
 
 The Fullscreen functionality utilizes `WindowInsetsControllerCompat` to manage immersive mode on Android.
 
-## Backwards Compatibility
+## Compatibility
 
-- **Plugin version 0.0.18+**  
-  Support is now streamlined for Android 10.0 (API 30) and above. Legacy support for earlier Android versions has been dropped.
+- **Plugin version 0.0.19 (Alpha/Testing)**  
+  🚧 **Experimental:** This version is updated for **Capacitor 7** but has not been fully tested yet.  
+  Requires **Android 10.0 (API 30) and above** and **Java 21**.
+
+- **Plugin version 0.0.18**  
+  Support is now streamlined for **Android 10.0 (API 30) and above**. Legacy support for earlier Android versions has been dropped.
 
 - **Plugin version 0.0.17**  
-  The immersive mode implementation supports Android 8.0 (API 26) and above.
+  The immersive mode implementation supports **Android 8.0 (API 26) and above**.
 
 
 ## Installation
