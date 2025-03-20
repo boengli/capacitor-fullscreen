@@ -11,10 +11,10 @@ The Fullscreen functionality utilizes `WindowInsetsControllerCompat` to manage i
 
 - **Plugin version 0.0.19 (Alpha/Testing)**  
   🚧 This version is updated for **Capacitor 7** but has not been fully tested yet.  
-  Requires **Android 10.0 (API 30) and above** and **Java 21**.
+  Requires **Android 11.0 (API 30) and above** and **Java 21**.
 
 - **Plugin version 0.0.18**  
-  Support is now streamlined for **Android 10.0 (API 30) and above**. Legacy support for earlier Android versions has been dropped.
+  Support is now streamlined for **Android 11.0 (API 30) and above**. Legacy support for earlier Android versions has been dropped.
 
 - **Plugin version 0.0.17**  
   The immersive mode implementation supports **Android 8.0 (API 26) and above**.
