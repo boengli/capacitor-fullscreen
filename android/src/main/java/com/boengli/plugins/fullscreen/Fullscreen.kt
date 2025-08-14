@@ -26,7 +26,8 @@ class Fullscreen : Plugin() {
   override fun load() {
     super.load()
     Log.d(TAG, "Fullscreen plugin loaded")
-    // Preloading immersive mode resources
+
+    // Enables FullScreen on plugin load, if you need to handle it in your code, comment out!
     preloadImmersiveModeResources()
   }
 
