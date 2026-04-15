@@ -31,9 +31,28 @@ The Fullscreen functionality utilizes `WindowInsetsControllerCompat` to manage i
 3. `npx cap sync android`
 
 
+## Configuration
+
+In your `capacitor.config.ts`:
+
+```ts
+import { CapacitorConfig } from '@capacitor/cli';
+
+const config: CapacitorConfig = {
+  plugins: {
+    Fullscreen: {
+      activateOnLoad: true, // default — activates immersive mode as soon as the plugin loads
+    },
+  },
+};
+```
+
+Set `activateOnLoad: false` if you want to control fullscreen manually and only call `activateImmersiveMode()` from your own code (e.g. on a specific page or user action).
+
+
 ## Example Usage
 
-```
+```ts
 import { Fullscreen } from '@boengli/capacitor-fullscreen';
 
 try {
@@ -42,7 +61,6 @@ try {
 } catch (error) {
   console.error('Error enabling fullscreen:', error);
 }
-
 ```
 
 

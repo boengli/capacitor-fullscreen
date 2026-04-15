@@ -26,8 +26,10 @@ class Fullscreen : Plugin() {
     super.load()
     Log.d(TAG, "Fullscreen plugin loaded")
 
-    // Enables FullScreen on plugin load, if you need to handle it in your code, comment out!
-    preloadImmersiveModeResources()
+    val activateOnLoad = getConfig().getBoolean("activateOnLoad", true)
+    if (activateOnLoad) {
+      preloadImmersiveModeResources()
+    }
   }
 
   @PluginMethod

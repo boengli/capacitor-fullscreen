@@ -1,11 +1,15 @@
 # Changelog
 
-## [0.0.20-beta] - Capacitor 8
+## [0.0.20-beta.1]
+
+- Added `activateOnLoad` config option (default `true`) — set to `false` to prevent the plugin from activating immersive mode automatically on load (fixes #1)
+
+## [0.0.20-beta.0] - Capacitor 8
 
 - Migrated to Capacitor 8
 - Updated Android Gradle Plugin to 8.13.0
 - Updated Kotlin to 2.2.20
-- Updated `compileSdk` / `targetSdk` to 36, `minSdk` to 24
+- Updated `compileSdk` / `targetSdk` to 36, `minSdk` to 24 (Android 7.0+)
 - Updated `androidx.core:core-ktx` to 1.17.0
 - Added TypeScript source (`src/index.ts`) and build output (`dist/`)
 - Requires Java 21
