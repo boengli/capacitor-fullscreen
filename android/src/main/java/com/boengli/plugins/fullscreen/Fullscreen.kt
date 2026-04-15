@@ -1,7 +1,6 @@
 package com.boengli.plugins.fullscreen
 
 import android.graphics.Color
-import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -129,7 +128,7 @@ class Fullscreen : Plugin() {
     decorView.onFocusChangeListener = null
     focusChangeListener = null
 
-    // Use WindowInsetsController for API 30+
+    // WindowInsetsControllerCompat works on all API levels (uses systemUiVisibility flags as fallback on API < 30)
     WindowCompat.setDecorFitsSystemWindows(window, false)
     window.statusBarColor = Color.TRANSPARENT
     window.navigationBarColor = Color.TRANSPARENT

@@ -9,9 +9,9 @@ The Fullscreen functionality utilizes `WindowInsetsControllerCompat` to manage i
 
 ## Compatibility
 
-- **Plugin version 0.0.20 (alpha)**  
+- **Plugin version 0.0.20 (beta)**  
   This version is updated for **Capacitor 8**.  
-  Requires **Android 11.0 (API 30) and above** and **Java 21**.
+  Requires **Android 7.0 (API 24) and above** and **Java 21**.
 
 - **Plugin version 0.0.19**  
   This version is updated for **Capacitor 7**.  
@@ -27,7 +27,7 @@ The Fullscreen functionality utilizes `WindowInsetsControllerCompat` to manage i
 ## Installation
 
 1. Install `npm i @boengli/capacitor-fullscreen`
-2. In `/android/variable.gradle` make sure to have at least `androidxCoreVersion` >=  1.9.0
+2. If your app overrides `androidxCoreVersion` in `/android/variables.gradle`, make sure it is `>= 1.17.0`
 3. `npx cap sync android`
 
 
