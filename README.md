@@ -9,7 +9,7 @@ The Fullscreen functionality utilizes `WindowInsetsControllerCompat` to manage i
 
 ## Compatibility
 
-- **Plugin version 0.0.20 (beta)**  
+- **Plugin version 0.0.20 (beta.2)**  
   This version is updated for **Capacitor 8**.  
   Requires **Android 7.0 (API 24) and above** and **Java 21**.
 
