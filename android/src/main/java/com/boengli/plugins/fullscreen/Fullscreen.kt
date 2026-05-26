@@ -1,6 +1,7 @@
 package com.boengli.plugins.fullscreen
 
 import android.graphics.Color
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -135,10 +136,12 @@ class Fullscreen : Plugin() {
     focusChangeListener = null
 
     WindowCompat.setDecorFitsSystemWindows(window, false)
-    @Suppress("DEPRECATION")
-    window.statusBarColor = Color.TRANSPARENT
-    @Suppress("DEPRECATION")
-    window.navigationBarColor = Color.TRANSPARENT
+    if (Build.VERSION.SDK_INT < 35) {
+      @Suppress("DEPRECATION")
+      window.statusBarColor = Color.TRANSPARENT
+      @Suppress("DEPRECATION")
+      window.navigationBarColor = Color.TRANSPARENT
+    }
 
     val controller = WindowCompat.getInsetsController(window, decorView)
     controller?.hide(WindowInsetsCompat.Type.systemBars())
