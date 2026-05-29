@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.0.20] - 2026-05-29
+
+- Stable release of 0.0.20-beta.3
+- Full Capacitor 8 support
+- Requires Android 7.0 (API 24) and above, Java 21
+
 ## [0.0.20-beta.3] - 2026-05-26
 
 - Fixed: `statusBarColor`/`navigationBarColor` now only set on API < 35 (ignored by Android 15+ edge-to-edge enforcement)
